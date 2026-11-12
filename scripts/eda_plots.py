@@ -1,9 +1,6 @@
-"""Exploratory plots for the March-2025 district OD data.
+"""Exploratory plots for the March 2025 district OD data.
 
-Purpose: understand the data BEFORE computing entropy. Each figure answers one
-question about the shape of the data or about whether a measure will be trustworthy.
-
-Writes PNGs to ~/Desktop/mobility_eda/.
+Writes figures to results/eda/.
 """
 from pathlib import Path
 import numpy as np
@@ -14,10 +11,9 @@ import matplotlib.pyplot as plt
 
 DATA = Path(__file__).resolve().parents[1] / "data"
 GEO  = DATA / "geometries"
-OUT  = Path.home() / "Desktop" / "mobility_eda"
+OUT  = Path(__file__).resolve().parents[1] / "results" / "eda"
 OUT.mkdir(parents=True, exist_ok=True)
 
-# recessive axes, thin marks — the data should be the loudest thing on the page
 mpl.rcParams.update({
     "figure.dpi": 130, "savefig.dpi": 130, "savefig.bbox": "tight",
     "font.size": 10, "axes.titlesize": 11, "axes.titleweight": "600",
@@ -30,10 +26,10 @@ mpl.rcParams.update({
 INK, ACCENT, MUTED = "#1a1a1a", "#2b6cb0", "#b0b0b0"
 
 
-def save(fig, name, caption):
+def save(fig, name):
     fig.savefig(OUT / name)
     plt.close(fig)
-    print(f"  {name:32s} {caption}")
+    print(f"  wrote {name}")
 
 
 # ---------------------------------------------------------------- load
@@ -97,7 +93,7 @@ ax[1].set_xlabel("rank of OD pair"); ax[1].set_ylabel("trips")
 ax[1].set_title("Rank–size: five orders of magnitude")
 share = 100*(v < 31).mean()
 fig.suptitle(f"OD flow sizes — {share:.0f}% of pairs carry <1 trip/day", y=1.03, fontsize=12, weight="600")
-save(fig, "01_flow_sizes.png", "how big is a typical flow (spoiler: tiny)")
+save(fig, "01_flow_sizes.png")
 
 # ------------------------------------------------- 2. per-district totals
 fig, ax = plt.subplots(1, 2, figsize=(11, 4))
@@ -108,7 +104,7 @@ ax[1].hist(O["N"], bins=60, color=ACCENT, alpha=.85, edgecolor="none")
 ax[1].set_xlabel("N — distinct destinations reached"); ax[1].set_ylabel("districts")
 ax[1].set_title("Destinations reached per district")
 fig.suptitle("Districts differ enormously in how much data they contribute", y=1.03, fontsize=12, weight="600")
-save(fig, "02_district_totals.png", "the sampling-effort spread across districts")
+save(fig, "02_district_totals.png")
 
 # ------------------------------------------------- 3. the sampling artifact
 fig, ax = plt.subplots(figsize=(6.4, 5.4))
@@ -121,7 +117,7 @@ ax.set_xlabel("total outbound trips  T"); ax.set_ylabel("destinations reached  N
 r = np.corrcoef(np.log(O["T"]), np.log(O["N"]))[0, 1]
 ax.set_title(f"N is largely a function of sampling effort\nlog–log correlation = {r:+.2f}")
 ax.legend(frameon=False)
-save(fig, "03_sampling_artifact.png", "*** why raw destination counts mislead ***")
+save(fig, "03_sampling_artifact.png")
 
 # ------------------------------------------------- 4. destination profiles
 tot = pairs.groupby("id_origin")["n_trips"].transform("sum")
@@ -143,7 +139,7 @@ for did, c, q in zip(picks, cols, qs):
 ax.set_xlabel("destination rank"); ax.set_ylabel("share of the district's trips  P")
 ax.set_title("What entropy actually sees\nsteep curve = trips funnel into few places; flat = spread out")
 ax.legend(frameon=False, fontsize=8.5, loc="lower left")
-save(fig, "04_destination_profiles.png", "*** entropy made visible ***")
+save(fig, "04_destination_profiles.png")
 
 # ------------------------------------------------- 5. context maps
 gdf = gpd.read_file(GEO / "distritos_2.geojson")[["id", "geometry"]]
@@ -162,7 +158,7 @@ for a, (col, cm, lab) in zip(axes.ravel(), specs):
     gdf.plot(**kw); a.set_axis_off(); a.set_title(lab, fontsize=10)
 fig.suptitle("Context — everything here is spatially smooth, which is why Moran's I matters",
              y=.93, fontsize=13, weight="600")
-save(fig, "05_context_maps.png", "*** spatial structure of every variable ***")
+save(fig, "05_context_maps.png")
 
 # ------------------------------------------------- 6. collinearity
 fig, ax = plt.subplots(1, 2, figsize=(11, 4.4))
@@ -177,7 +173,7 @@ ax[1].set_xscale("log"); ax[1].set_yscale("log")
 ax[1].set_xlabel("net income €/person/yr"); ax[1].set_ylabel("total outbound trips")
 ax[1].set_title("Income vs trips")
 fig.suptitle("Why population has to be in the regression", y=1.02, fontsize=12, weight="600")
-save(fig, "06_collinearity.png", "the confound Esteban's P_i term is there to absorb")
+save(fig, "06_collinearity.png")
 
 # ------------------------------------------------- 7. trip distance
 cent = gpd.read_file(GEO / "distritos_2.geojson")[["id", "geometry"]].set_index("id")
@@ -207,6 +203,6 @@ for km in (10, 25, 100):
 ax[1].set_xlabel("distance (km)"); ax[1].set_ylabel("cumulative % of trips")
 ax[1].set_title("Almost everything is local")
 fig.suptitle("How far do trips actually go", y=1.03, fontsize=12, weight="600")
-save(fig, "07_trip_distance.png", "sets the scale for the gravity model later")
+save(fig, "07_trip_distance.png")
 
 print(f"\ndone → {OUT}")

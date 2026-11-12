@@ -49,8 +49,8 @@
   <h2>Visitor income mix by district income</h2>
   <table>
     <tr><th>measure</th><th>Spearman &rho;</th><th>&beta; income (vol-adjusted)</th><th>p</th></tr>
-    <tr><td>entropy (how balanced)</td><td>+0.20</td><td>+0.066</td><td>5e&minus;8</td></tr>
-    <tr><td>JSD (how selective)</td><td>&minus;0.37</td><td>&minus;0.169</td><td>8e&minus;68</td></tr>
+    <tr><td>Shannon entropy</td><td>+0.20</td><td>+0.066</td><td>5e&minus;8</td></tr>
+    <tr><td>Jensen-Shannon divergence</td><td>&minus;0.37</td><td>&minus;0.169</td><td>8e&minus;68</td></tr>
   </table>
 </section>
 
@@ -70,19 +70,9 @@
   <h2>Trip spread vs unemployment and income</h2>
   <table>
     <tr><th>how residents move</th><th>&rho; unemployment</th><th>&rho; income</th></tr>
-    <tr><td>flux entropy</td><td>&minus;0.15</td><td>+0.17</td></tr>
-    <tr><td>evenness</td><td>&minus;0.15</td><td>+0.06</td></tr>
-    <tr><td>number of destinations</td><td>0.00</td><td>+0.27</td></tr>
-  </table>
-</section>
-
-<section class="slide">
-  <h2>Predicting unemployment (18 to 64)</h2>
-  <table>
-    <tr><th>predictor</th><th>coef (pp per SD)</th><th>p</th></tr>
-    <tr><td>income</td><td>&minus;1.33</td><td>&lt;0.001</td></tr>
-    <tr><td>mobility evenness</td><td>&minus;0.34</td><td>&lt;0.001</td></tr>
-    <tr><td>R&sup2;</td><td colspan="2">0.18 (n = 3,740)</td></tr>
+    <tr><td>Shannon entropy</td><td>&minus;0.15</td><td>+0.17</td></tr>
+    <tr><td>Pielou evenness</td><td>&minus;0.15</td><td>+0.06</td></tr>
+    <tr><td>distinct destinations</td><td>0.00</td><td>+0.27</td></tr>
   </table>
 </section>
 

@@ -10,14 +10,6 @@ __pycache__/
 *.py[cod]
 .ipynb_checkpoints/
 
-# Local Claude Code / OpenCode agent files (machine-specific)
-.claude/settings.local.json
-opencode.jsonc
-AUTONOMOUS_ENTROPY_TASK.md
-run_entropy_agent.sh
-analysis/
-results/entropy_autorun/
-
 # Credentials
 *.token
 .hf_token

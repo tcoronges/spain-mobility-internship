@@ -1,18 +1,15 @@
-"""Unconstrained gravity with an income distance, per Esteban's spec:
+"""Unconstrained gravity model with income distance:
 
     T_ij ~ P_i P_j / d_ij^g
 
     ln T_ij ~ ln P_i + ln P_j - g ln d_ij^(g)
     ln T_ij ~ ln P_i + ln P_j - g ln d_ij^(g) - b ln d_ij^(Income)
 
-Fitted two ways:
-  (A) OLS on logs, observed pairs only          <- what the formula literally says
-  (B) PPML on levels, full matrix incl. zeros   <- Santos Silva & Tenreyro (2006)
+Estimated via:
+  (A) OLS on logs, observed pairs only
+  (B) PPML on levels, full matrix incl. zeros (Santos Silva & Tenreyro, 2006)
 
-MITMA floors published flows at 1 trip/day, so absent cells are censored, not true
-zeros. (A) drops them and selects on the outcome; (B) keeps them.
-
-Writes plain PNGs to ~/Desktop/gravity_slides/.
+Writes figures and summary table to results/gravity/.
 """
 from pathlib import Path
 import numpy as np
@@ -24,7 +21,7 @@ from scipy.optimize import minimize
 
 DATA = Path(__file__).resolve().parents[1] / "data"
 GEO  = DATA / "geometries"
-OUT  = Path.home() / "Desktop" / "gravity_slides"
+OUT  = Path(__file__).resolve().parents[1] / "results" / "gravity"
 OUT.mkdir(parents=True, exist_ok=True)
 K = 10
 
